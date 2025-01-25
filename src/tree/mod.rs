@@ -2,7 +2,7 @@ use crate::{
     error::EvalexprResultValue,
     token::Token,
     value::{
-        numeric_types::{default_numeric_types::DefaultNumericTypes, EvalexprNumericTypes},
+        numeric_types::{DefaultNumericTypes, EvalexprNumericTypes},
         TupleType, EMPTY_VALUE,
     },
     Context, ContextWithMutableVariables, EmptyType, HashMapContext,
@@ -897,7 +897,10 @@ pub(crate) fn tokens_to_operator_tree<NumericTypes: EvalexprNumericTypes>(
                 result
             },
             Token::Float(float) => Some(Node::new(Operator::value(Value::Float(float)))),
-            Token::Int(int) => Some(Node::new(Operator::value(Value::Int(int)))),
+            Token::Int(int) =>{ 
+                let float_value = NumericTypes::int_as_float(&int);
+                Some(Node::new(Operator::value(Value::Float(float_value))))
+            },
             Token::Boolean(boolean) => Some(Node::new(Operator::value(Value::Boolean(boolean)))),
             Token::String(string) => Some(Node::new(Operator::value(Value::String(string)))),
         };
